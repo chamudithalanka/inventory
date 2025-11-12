@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SPA Laundry Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                500: "#6366f1",
+                600: "#4f46e5",
+                700: "#4338ca",
+              },
+            },
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', "Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="min-h-screen bg-slate-100 font-sans text-slate-900 antialiased">
+    <div class="flex min-h-screen flex-col">
+      <header class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-lg print:hidden">
+        <div class="mx-auto max-w-6xl px-4 py-10">
+          <div class="space-y-6">
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-2xl font-bold tracking-tight md:text-3xl"
+                >SPA Linen Tracker</span
+              >
+              <button
+                class="menu-toggle inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 md:hidden"
+                type="button"
+                aria-expanded="false"
+                aria-controls="top-nav"
+                data-menu-toggle
+              >
+                <span class="sr-only">Toggle navigation</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6">
+                  <path
+                    fill="currentColor"
+                    d="M5 6.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm11 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm11 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM5 17.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm11 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <p class="max-w-xl text-sm text-slate-200/80 md:text-base">
+              Record clean deliveries and dirty collections for each linen type.
+            </p>
+            <nav
+              id="top-nav"
+              class="hidden flex-col gap-2 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg shadow-black/10 md:flex md:flex-row md:items-center md:gap-4 md:border-0 md:bg-transparent md:p-0 md:shadow-none"
+              data-nav-panel
+            >
+              <a
+                href="#add-linen"
+                class="rounded-full px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              >
+                Add Linen
+              </a>
+              <a
+                href="#record-movement"
+                class="rounded-full px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              >
+                Record Movement
+              </a>
+              <a
+                href="#daily-summary"
+                class="rounded-full px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              >
+                Daily Summary
+              </a>
+              <a
+                href="#transactions"
+                class="rounded-full px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              >
+                Transactions
+              </a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 py-10 print:p-0">
+        <div class="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 print:max-w-full print:px-0">
+          <section
+            id="add-linen"
+            class="rounded-3xl bg-white/90 p-6 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200/60 backdrop-blur-sm print:hidden"
+          >
+            <h2 class="text-xl font-semibold text-slate-900">
+              Add Linen Type
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Create a new linen style to track deliveries and dirty
+              collections.
+            </p>
+            <form id="linen-type-form" class="mt-6 grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+              <div class="grid gap-2">
+                <label for="linen-name" class="text-sm font-medium text-slate-700"
+                  >Linen name</label
+                >
+                <input
+                  id="linen-name"
+                  name="linenName"
+                  type="text"
+                  placeholder="e.g. Dark blue towels"
+                  required
+                  class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/60"
+                />
+              </div>
+              <button
+                type="submit"
+                class="inline-flex items-center justify-center rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2"
+              >
+                Add Linen
+              </button>
+            </form>
+            <div class="mt-8 rounded-3xl border border-slate-200/70 bg-white/80 shadow-sm">
+              <button
+                id="linen-toggle"
+                type="button"
+                class="flex w-full items-center justify-between gap-3 rounded-3xl px-5 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300"
+                aria-expanded="false"
+              >
+                <div class="flex items-center gap-2">
+                  <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Current linens
+                  </h3>
+                  <span
+                    id="linen-count"
+                    class="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-semibold text-slate-600"
+                  >
+                    0
+                  </span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                  <span id="linen-toggle-text">Show list</span>
+                  <svg
+                    id="linen-toggle-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    class="h-4 w-4 transition-transform duration-200"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M12 15.5a1 1 0 0 1-.7-.29l-4.5-4.5a1 1 0 0 1 1.4-1.42L12 13.09l3.8-3.8a1 1 0 0 1 1.4 1.42l-4.5 4.5a1 1 0 0 1-.7.29Z"
+                    />
+                  </svg>
+                </div>
+              </button>
+              <div
+                id="linen-panel-body"
+                class="hidden border-t border-slate-200/70 px-5 pb-5 pt-4"
+              >
+                <ul
+                  id="linen-list"
+                  class="divide-y divide-slate-200 rounded-2xl border border-slate-200/70 bg-white/70 shadow-sm"
+                ></ul>
+                <p
+                  id="linen-list-empty"
+                  class="mt-4 text-sm italic text-slate-500"
+                >
+                  No linen types yet. Add one above.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section
+            id="record-movement"
+            class="rounded-3xl bg-white/90 p-6 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200/60 backdrop-blur-sm print:hidden"
+          >
+            <h2 class="text-xl font-semibold text-slate-900">
+              Record Movement
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Log deliveries and dirty collections throughout the day.
+            </p>
+            <form id="movement-form" class="mt-6 grid gap-4 md:grid-cols-2">
+              <div class="grid gap-2">
+                <label for="linen-select" class="text-sm font-medium text-slate-700"
+                  >Linen type</label
+                >
+                <select
+                  id="linen-select"
+                  name="linenType"
+                  required
+                  class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/60"
+                ></select>
+              </div>
+
+              <div class="grid gap-2">
+                <label for="movement-amount" class="text-sm font-medium text-slate-700"
+                  >Quantity</label
+                >
+                <input
+                  id="movement-amount"
+                  name="amount"
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 10"
+                  required
+                  class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base shadow-sm transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400/60"
+                />
+              </div>
+
+              <fieldset class="md:col-span-2">
+                <legend class="text-sm font-medium text-slate-700">
+                  Movement type
+                </legend>
+                <div
+                  class="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm sm:grid-cols-2"
+                >
+                  <label class="flex items-center gap-3 text-sm font-medium text-slate-700">
+                    <input
+                      type="radio"
+                      name="movement"
+                      value="add"
+                      checked
+                      class="h-4 w-4 border-slate-300 text-brand-600 focus:ring-brand-500"
+                    />
+                    Delivery (add clean linen)
+                  </label>
+                  <label class="flex items-center gap-3 text-sm font-medium text-slate-700">
+                    <input
+                      type="radio"
+                      name="movement"
+                      value="remove"
+                      class="h-4 w-4 border-slate-300 text-brand-600 focus:ring-brand-500"
+                    />
+                    Dirty collection (remove used linen)
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="md:col-span-2">
+                <button
+                  type="submit"
+                  class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2"
+                >
+                  Save Movement
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section
+            id="daily-summary"
+            class="summary-card rounded-3xl bg-white p-6 shadow-2xl shadow-slate-900/10 ring-1 ring-slate-200 print:rounded-none print:shadow-none print:ring-0 print:p-0"
+          >
+            <div
+              class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div>
+                <h2 class="text-xl font-semibold text-slate-900">
+                  Daily Summary
+                </h2>
+                <p class="mt-1 text-sm text-slate-500">
+                  Overview of clean deliveries, dirty collections, and balance.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-3 print:hidden">
+                <button
+                  id="print-summary"
+                  type="button"
+                  class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300"
+                >
+                  Print Summary
+                </button>
+                <button
+                  id="reset-day"
+                  type="button"
+                  class="inline-flex items-center justify-center rounded-full border border-rose-200 bg-rose-50 px-5 py-2.5 text-sm font-semibold text-rose-600 shadow-sm transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                >
+                  Reset Day
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-6 overflow-x-auto" id="summary-table-wrapper">
+              <table
+                id="summary-table"
+                class="min-w-full divide-y divide-slate-200 text-sm"
+              >
+                <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">
+                      Linen
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">
+                      Deliveries (+)
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">
+                      Dirty Collections (-)
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold">
+                      Total +
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold">
+                      Total -
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold">
+                      Balance
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100"></tbody>
+                <tfoot class="bg-slate-50 text-slate-700 print:bg-white">
+                  <tr>
+                    <th
+                      colspan="3"
+                      class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wide text-slate-500"
+                    >
+                      Grand totals
+                    </th>
+                    <th
+                      id="grand-plus"
+                      class="px-4 py-3 text-right text-sm font-semibold text-emerald-600"
+                    >
+                      0
+                    </th>
+                    <th
+                      id="grand-minus"
+                      class="px-4 py-3 text-right text-sm font-semibold text-rose-600"
+                    >
+                      0
+                    </th>
+                    <th
+                      id="grand-balance"
+                      class="px-4 py-3 text-right text-sm font-semibold text-slate-900"
+                    >
+                      0
+                    </th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </section>
+
+          <section
+            id="transactions"
+            class="rounded-3xl bg-white/90 p-6 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200/60 backdrop-blur-sm print:hidden"
+          >
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 class="text-xl font-semibold text-slate-900">
+                  Transactions
+                </h2>
+                <p class="text-sm text-slate-500">
+                  Every delivery and dirty collection recorded in order.
+                </p>
+              </div>
+            </div>
+            <div
+              id="transactions-wrapper"
+              class="mt-6 overflow-x-auto rounded-2xl border border-slate-200/80"
+            >
+              <table
+                id="transactions-table"
+                class="min-w-[720px] divide-y divide-slate-200 text-sm"
+              >
+                <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">
+                      Time
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">
+                      Linen
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">
+                      Movement
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold">
+                      Quantity
+                    </th>
+                    <th scope="col" class="px-4 py-3 text-right font-semibold">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+            <p
+              id="transactions-empty"
+              class="mt-4 hidden text-sm italic text-slate-500"
+            >
+              No transactions yet.
+            </p>
+          </section>
+        </div>
+      </main>
+
+      <template id="summary-row-template">
+        <tr
+          class="border-b border-slate-100 bg-white/60 transition hover:bg-slate-50 last:border-b-0"
+        >
+          <td class="linen-name px-4 py-3 text-sm font-semibold text-slate-900"></td>
+          <td class="plus-list px-4 py-3 text-xs font-medium uppercase tracking-wide text-emerald-600"></td>
+          <td class="minus-list px-4 py-3 text-xs font-medium uppercase tracking-wide text-rose-600"></td>
+          <td class="total-plus px-4 py-3 text-right text-sm font-semibold text-emerald-600"></td>
+          <td class="total-minus px-4 py-3 text-right text-sm font-semibold text-rose-600"></td>
+          <td class="balance px-4 py-3 text-right text-sm font-semibold text-slate-900"></td>
+        </tr>
+      </template>
+
+      <footer class="bg-slate-900 py-10 text-white print:hidden">
+        <div class="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 md:flex-row md:items-center md:justify-between">
+          <div class="space-y-2">
+            <strong class="text-lg font-semibold">Hotel SPA Laundry Desk</strong>
+            <p class="text-sm text-slate-200/80">
+              Daily linen coordination by housekeeping.
+            </p>
+          </div>
+          <div class="flex items-center gap-3" aria-label="Social media">
+            <a
+              href="https://www.facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              <svg viewBox="0 0 24 24" role="img" aria-hidden="true" class="h-5 w-5">
+                <path
+                  fill="currentColor"
+                  d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07c0 5.02 3.66 9.19 8.44 9.93v-7.03H8.08V12.1h2.36V9.98c0-2.33 1.38-3.62 3.5-3.62.7 0 1.61.12 1.61.12v2.2h-.91c-1 0-1.31.63-1.31 1.27v1.52h2.23l-.36 2.88h-1.87v7.03C18.34 21.26 22 17.09 22 12.07Z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              <svg viewBox="0 0 24 24" role="img" aria-hidden="true" class="h-5 w-5">
+                <path
+                  fill="currentColor"
+                  d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm-5 4.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5ZM17.75 6a1 1 0 1 1-1 1 1 1 0 0 1 1-1Z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://www.tripadvisor.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Tripadvisor"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              <svg viewBox="0 0 24 24" role="img" aria-hidden="true" class="h-5 w-5">
+                <path
+                  fill="currentColor"
+                  d="M3.43 8.07a6.53 6.53 0 0 1 4.59-1.84 6.64 6.64 0 0 1 3.99 1.33A6.64 6.64 0 0 1 16 6.23a6.53 6.53 0 0 1 4.59 1.84l1.59-1.59.7.71-2.08 2.09a6.46 6.46 0 0 1-4.13 11.14A6.52 6.52 0 0 1 12 19a6.52 6.52 0 0 1-4.67 1.42A6.46 6.46 0 0 1 3.2 8.29L1.12 6.2l.7-.7ZM12 9a5.47 5.47 0 0 0-3.78 1.5A5.47 5.47 0 0 0 4.44 9 4.44 4.44 0 1 0 9 13.56 3 3 0 0 1 12 12a3 3 0 0 1 3 1.56A4.44 4.44 0 1 0 19.56 9a5.47 5.47 0 0 0-3.78 1.5A5.47 5.47 0 0 0 12 9ZM9 13.56A2.44 2.44 0 1 1 6.56 11 2.44 2.44 0 0 1 9 13.56Zm8-2.56A2.44 2.44 0 1 1 14.56 13 2.44 2.44 0 0 1 17 11Z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <p class="mx-auto max-w-6xl px-4 text-sm text-slate-300/80">
+          Data is stored locally in this browser. Clear browsing data to remove
+          saved records.
+        </p>
+      </footer>
+    </div>
+
+    <div
+      id="toast-stack"
+      class="pointer-events-none fixed top-4 right-4 z-50 flex w-full max-w-xs flex-col gap-3 sm:max-w-sm"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+
+    <div
+      id="storage-modal"
+      class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm print:hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="storage-modal-title"
+    >
+      <div
+        class="relative mx-4 w-full max-w-lg rounded-3xl bg-white p-8 text-slate-900 shadow-2xl ring-1 ring-slate-200"
+        data-modal-card
+      >
+        <div class="flex items-center gap-4">
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-600">
+            <svg viewBox="0 0 24 24" class="h-6 w-6" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a10 10 0 1 1-7.07 2.93A10 10 0 0 1 12 2Zm-.01 5.25a1.13 1.13 0 1 0 1.12 1.13 1.12 1.12 0 0 0-1.12-1.13Zm1.26 9.5a.75.75 0 0 0 .75-.75.76.76 0 0 0-.44-.68l-.08-.03a1.25 1.25 0 0 1-.72-1.14V11a.75.75 0 0 0-1.5 0v3.15a2.77 2.77 0 0 0 1.59 2.5l.05.02v.33a.75.75 0 0 0 1.5 0Z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3 id="storage-modal-title" class="text-lg font-semibold">
+              Heads up about your data
+            </h3>
+            <p class="mt-2 text-sm text-slate-600">
+              Data is stored locally in this browser. Clear browsing data to
+              remove saved records.
+            </p>
+          </div>
+        </div>
+        <div class="mt-8 flex justify-end">
+          <button
+            id="storage-modal-dismiss"
+            type="button"
+            class="inline-flex items-center justify-center rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2"
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+
